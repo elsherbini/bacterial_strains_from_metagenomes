@@ -14,7 +14,7 @@ rule create_scaffold_to_bin:
         os.path.join(RESULTS_DIR, "logs", "create_scaffold_to_bin.log")
     threads: 1
     conda:
-        "../envs/python.yaml" # General python environment
+        "../envs/instrain.yaml" # General python environment
     script:
         "../scripts/generate_stb.py"
 
