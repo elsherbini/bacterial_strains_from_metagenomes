@@ -3,8 +3,7 @@
 """
 rule instrain_profile:
     input:
-        bam = "results/mapped_reads/{sample}.bam",
-        bai = "results/mapped_reads/{sample}.bam.bai",
+        sam = "results/mapped_reads/{sample}/{sample}.sam",
         fasta = "results/genome_database/concatenated_genomes.fasta",
         genes = "results/genome_database/database_genes.fna",
         stb = "results/genome_database/scaffold_to_bin.tsv"
@@ -26,7 +25,7 @@ rule instrain_profile:
         time = config.get("instrain", {}).get("time_min", 240)
     shell:
         """
-        instrain profile {input.bam} {input.fasta} \
+        instrain profile {input.sam} {input.fasta} \
             -o {params.output_prefix} \
             -p {threads} \
             -g {input.genes} \

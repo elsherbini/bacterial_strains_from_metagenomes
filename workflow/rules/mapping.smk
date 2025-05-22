@@ -10,32 +10,22 @@ rule map_reads_to_db:
         r2 = lambda wildcards: samples.loc[wildcards.sample, "fastq_2"],
         bowtie2_index_flag = os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes.index_SUCCESS")
     output:
-        bam = os.path.join(MAPPING_RESULTS_DIR, "{sample}", "{sample}.sorted.bam"),
-        bai = os.path.join(MAPPING_RESULTS_DIR, "{sample}", "{sample}.sorted.bam.bai")
+        sam = os.path.join(MAPPED_READS_DIR, "{sample}", "{sample}.sam"),
     log:
         os.path.join(RESULTS_DIR, "logs", "mapping", "{sample}.log")
     params:
         bowtie2_index = os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes"),
-        bowtie2_options = config["params"]["bowtie2"]["options"],
         # Mapping quality filter for Samtools, if needed
-        mapq_filter = config["params"]["samtools"]["mapq_filter"]
     threads: 
-        config["params"]["bowtie2"]["threads"]
+        8
     conda:
         "../envs/bowtie2.yaml"  # Assuming bowtie2.yaml includes samtools, otherwise use a combined env
     shell:
         """
-        # Map reads using Bowtie2 and pipe to samtools for BAM conversion and sorting
         bowtie2 \
             -x {params.bowtie2_index} \
             -1 {input.r1} \
             -2 {input.r2} \
-            {params.bowtie2_options} \
             --threads {threads} \
-            2> {log} | \
-        samtools view -b -q {params.mapq_filter} - | \
-        samtools sort -o {output.bam} -@ {threads}
-
-        # Index the BAM file
-        samtools index -@ {threads} {output.bam}
+            2> {log} > {output.sam}
         """

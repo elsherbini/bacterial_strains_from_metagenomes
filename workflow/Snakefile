@@ -4,17 +4,17 @@ import pandas as pd
 import os
 
 # Load configuration
-configfile: "../config/config.yaml"
+configfile: "config/config.yaml"
 
 # --- Helper Functions ---
 
 def get_genome_paths_from_taxonomy_file(taxonomy_file):
     """Reads the taxonomy_annotation.tsv and returns a list of genome file paths."""
-    df = pd.read_csv(taxonomy_file, sep='\t')
+    df = pd.read_csv(taxonomy_file)
+    print(df)
     # Assuming 'path' column contains paths relative to genome_database_dir or absolute paths
     # If relative, prepend genome_database_dir
-    if not df['path'].is_absolute().all():
-        df['path'] = config["genome_database_dir"] + df['path']
+    df['path'] = config["genome_database_dir"] + df['path']
     return df['path'].tolist()
 
 def get_genome_basenames(genome_paths):

@@ -1,7 +1,7 @@
 # Configuration for the bacterial_strains_from_metagenomes pipeline
 
 # Input genome database
-genome_database_dir: "bacterial_strains_from_metagenomes/genome_database/"
+genome_database_dir: "genome_database/"
 # The taxonomy_annotation.tsv file should be within the genome_database_dir
 # Example: bacterial_strains_from_metagenomes/genome_database/taxonomy_annotation.tsv
 
