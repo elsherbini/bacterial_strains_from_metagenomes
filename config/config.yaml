@@ -1,0 +1,48 @@
+# Configuration for the bacterial_strains_from_metagenomes pipeline
+
+# Input genome database
+genome_database_dir: "bacterial_strains_from_metagenomes/genome_database/"
+# The taxonomy_annotation.tsv file should be within the genome_database_dir
+# Example: bacterial_strains_from_metagenomes/genome_database/taxonomy_annotation.tsv
+
+# Reference to the snakemake_style.md for input CSV schema
+# samples.csv schema:
+# sample_id,fastq_1,fastq_2
+samples_csv: "config/samples.csv"
+
+# Output directories (relative to the main workflow directory)
+results_dir: "results"
+resources_dir: "resources" # For persistent resources like the bowtie2 index
+
+# Tool parameters (can be expanded later)
+params:
+  prodigal:
+    mode: "single" # or "meta"
+  bowtie2_build:
+    threads: 8
+    # --large-index will be added if number of genomes is high, or can be set manually
+  bowtie2_map:
+    threads: 8
+    extra: "" # e.g., "--very-sensitive"
+
+# inStrain settings
+instrain:
+  threads: 8
+  memory_mb: 32000
+  time_min: 240
+  min_read_ani: 0.94  # Minimum read ANI to consider a read "mapped"
+  min_mapq: 2         # Minimum mapping quality to consider a read "mapped"
+  min_coverage: 5     # Minimum coverage for strain comparison
+  profile_extra: "--database_mode --skip_mm"  # Additional flags for inStrain profile
+  compare_extra: ""   # Additional flags for inStrain compare
+
+# Cluster configuration (example, adjust to your environment)
+# cluster:
+#   submit_cmd: "sbatch"
+#   jobscript: "slurm-jobscript.sh"
+#   resources:
+#     threads: "{threads}"
+#     mem_mb: "{mem_mb}"
+# default_resources:
+#   - threads=1
+#   - mem_mb=1000 

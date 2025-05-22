@@ -1,0 +1,21 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+description: Schema for samples.csv input file for bacterial_strains_from_metagenomes pipeline
+type: object
+properties:
+  sample_id:
+    type: string
+    description: Unique identifier for the sample
+    pattern: "^[A-Za-z0-9_-]+$"
+  fastq_1:
+    type: string
+    description: Path to forward reads (R1)
+    pattern: ".*\\.f(ast)?q(\\.gz)?$"
+  fastq_2:
+    type: string
+    description: Path to reverse reads (R2)
+    pattern: ".*\\.f(ast)?q(\\.gz)?$"
+required:
+  - sample_id
+  - fastq_1
+  - fastq_2
+additionalProperties: false 

@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bowtie2 >=2.4.0 # Specify a version, adjust as needed
+  - samtools >=1.10 # Include samtools for sorting and indexing BAM files 

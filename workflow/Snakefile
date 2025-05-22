@@ -1,0 +1,78 @@
+# Main Snakefile for bacterial_strains_from_metagenomes pipeline
+
+import pandas as pd
+import os
+
+# Load configuration
+configfile: "../config/config.yaml"
+
+# --- Helper Functions ---
+
+def get_genome_paths_from_taxonomy_file(taxonomy_file):
+    """Reads the taxonomy_annotation.tsv and returns a list of genome file paths."""
+    df = pd.read_csv(taxonomy_file, sep='\t')
+    # Assuming 'path' column contains paths relative to genome_database_dir or absolute paths
+    # If relative, prepend genome_database_dir
+    if not df['path'].is_absolute().all():
+        df['path'] = config["genome_database_dir"] + df['path']
+    return df['path'].tolist()
+
+def get_genome_basenames(genome_paths):
+    """Extracts basenames without extensions from genome paths."""
+    return [os.path.splitext(os.path.basename(p))[0] for p in genome_paths]
+
+# --- Input Data Handling ---
+
+# Read sample information from CSV
+SAMPLES_DF = pd.read_csv(config["samples_csv"])
+SAMPLES = SAMPLES_DF["sample_id"].tolist()
+
+# Genome files
+TAXONOMY_FILE = os.path.join(config["genome_database_dir"], "taxonomy_annotation.tsv")
+GENOME_PATHS = get_genome_paths_from_taxonomy_file(TAXONOMY_FILE)
+GENOME_BASENAMES = get_genome_basenames(GENOME_PATHS)
+
+# --- Output Directories ---
+RESULTS_DIR = config["results_dir"]
+RESOURCES_DIR = config["resources_dir"]
+GENOME_DB_RESULTS_DIR = os.path.join(RESULTS_DIR, "genome_database")
+PRODIGAL_RESULTS_DIR = os.path.join(GENOME_DB_RESULTS_DIR, "prodigal_out") # For individual prodigal outputs
+BOWTIE2_INDEX_DIR = os.path.join(RESOURCES_DIR, "bowtie2_index") # Index stored in resources
+MAPPED_READS_DIR = os.path.join(RESULTS_DIR, "mapped_reads")
+INSTRAIN_DIR = os.path.join(RESULTS_DIR, "instrain")
+INSTRAIN_PROFILES_DIR = os.path.join(INSTRAIN_DIR, "profiles")
+INSTRAIN_COMPARE_DIR = os.path.join(INSTRAIN_DIR, "comparison")
+
+
+# --- Rule Definitions ---
+
+# Include modular rule files
+include: "rules/database_preparation.smk"
+include: "rules/mapping.smk"
+include: "rules/instrain_analysis.smk"
+
+# --- Target Rule (all) ---
+rule all:
+    input:
+        # Database preparation outputs
+        os.path.join(GENOME_DB_RESULTS_DIR, "scaffold_to_bin.tsv"),
+        os.path.join(GENOME_DB_RESULTS_DIR, "database_genes.fna"),
+        os.path.join(GENOME_DB_RESULTS_DIR, "database_genes.faa"),
+        # Bowtie2 index files (using a common prefix and .1.bt2 as representative)
+        # Snakemake will track all files with the same prefix like .2.bt2, .3.bt2, .4.bt2, .rev.1.bt2, .rev.2.bt2
+        # Or .1.bt2l, .2.bt2l, etc. for large indexes
+        # We will use a flag file to indicate completion of the index
+        os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes.index_SUCCESS"),
+
+        # Per-sample outputs
+        expand(os.path.join(MAPPED_READS_DIR, "{sample}.bam"), sample=SAMPLES),
+        expand(os.path.join(MAPPED_READS_DIR, "{sample}.bam.bai"), sample=SAMPLES),
+        
+        # inStrain profile outputs
+        expand(os.path.join(INSTRAIN_PROFILES_DIR, "{sample}"), sample=SAMPLES),
+        
+        # inStrain compare output directory
+        os.path.join(INSTRAIN_DIR, "profile_list.txt"),
+        os.path.join(INSTRAIN_COMPARE_DIR)
+    default_target: True
+    message: "Pipeline execution completed."

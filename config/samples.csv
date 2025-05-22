@@ -1,0 +1,4 @@
+sample_id,fastq_1,fastq_2
+sampleA,path/to/sampleA_R1.fastq.gz,path/to/sampleA_R2.fastq.gz
+sampleB,path/to/sampleB_R1.fastq.gz,path/to/sampleB_R2.fastq.gz
+# Add more samples as needed 
