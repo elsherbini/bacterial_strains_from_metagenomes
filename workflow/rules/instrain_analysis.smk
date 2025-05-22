@@ -3,7 +3,7 @@
 """
 rule instrain_profile:
     input:
-        sam = "results/mapped_reads/{sample}/{sample}.sam",
+        sam = "results/mapped_reads/{sample}.sam",
         fasta = "results/genome_database/concatenated_genomes.fasta",
         genes = "results/genome_database/database_genes.fna",
         stb = "results/genome_database/scaffold_to_bin.tsv"

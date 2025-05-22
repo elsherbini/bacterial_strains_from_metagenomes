@@ -10,7 +10,7 @@ rule map_reads_to_db:
         r2 = lambda wildcards: SAMPLES_DF.loc[SAMPLES_DF['sample_id'] == wildcards.sample, "fastq_2"].iloc[0],
         bowtie2_index_flag = os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes.index_SUCCESS")
     output:
-        sam = os.path.join(MAPPED_READS_DIR, "{sample}", "{sample}.sam"),
+        sam = os.path.join(MAPPED_READS_DIR, "{sample}.sam"),
     log:
         os.path.join(RESULTS_DIR, "logs", "mapping", "{sample}.log")
     params:
