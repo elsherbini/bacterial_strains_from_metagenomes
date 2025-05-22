@@ -6,8 +6,8 @@ import pandas as pd
 # --- Rule to Map Reads to Database and Generate Sorted BAM files ---
 rule map_reads_to_db:
     input:
-        r1 = lambda wildcards: SAMPLES_DF.loc[wildcards.sample, "fastq_1"],
-        r2 = lambda wildcards: SAMPLES_DF.loc[wildcards.sample, "fastq_2"],
+        r1 = lambda wildcards: SAMPLES_DF.loc[SAMPLES_DF['sample_id'] == wildcards.sample, "fastq_1"].iloc[0],
+        r2 = lambda wildcards: SAMPLES_DF.loc[SAMPLES_DF['sample_id'] == wildcards.sample, "fastq_2"].iloc[0],
         bowtie2_index_flag = os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes.index_SUCCESS")
     output:
         sam = os.path.join(MAPPED_READS_DIR, "{sample}", "{sample}.sam"),
