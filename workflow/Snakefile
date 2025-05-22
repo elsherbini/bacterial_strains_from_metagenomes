@@ -65,9 +65,7 @@ rule all:
         os.path.join(BOWTIE2_INDEX_DIR, "concatenated_genomes.index_SUCCESS"),
 
         # Per-sample outputs
-        expand(os.path.join(MAPPED_READS_DIR, "{sample}.bam"), sample=SAMPLES),
-        expand(os.path.join(MAPPED_READS_DIR, "{sample}.bam.bai"), sample=SAMPLES),
-        
+        expand(os.path.join(MAPPED_READS_DIR, "{sample}.sam"), sample=SAMPLES),
         # inStrain profile outputs
         expand(os.path.join(INSTRAIN_PROFILES_DIR, "{sample}"), sample=SAMPLES),
         
