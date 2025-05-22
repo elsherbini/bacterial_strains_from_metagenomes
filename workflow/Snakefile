@@ -68,9 +68,6 @@ rule all:
         expand(os.path.join(MAPPED_READS_DIR, "{sample}.sam"), sample=SAMPLES),
         # inStrain profile outputs
         expand(os.path.join(INSTRAIN_PROFILES_DIR, "{sample}"), sample=SAMPLES),
-        
-        # inStrain compare output directory
-        os.path.join(INSTRAIN_DIR, "profile_list.txt"),
         os.path.join(INSTRAIN_COMPARE_DIR)
     default_target: True
     message: "Pipeline execution completed."
