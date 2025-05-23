@@ -27,7 +27,7 @@ rule instrain_profile:
         partition = "short"
     shell:
         """
-        instrain profile {input.sam} {input.fasta} \
+        inStrain profile {input.sam} {input.fasta} \
             -o {params.output_prefix} \
             -p {threads} \
             -g {input.genes} \
@@ -64,7 +64,7 @@ rule instrain_compare:
         echo {input.profiles} | tr ' ' '\\n' > {params.profiles_txt}
         
         # Run inStrain compare
-        instrain compare \
+        inStrain compare \
             -i {params.profiles_txt} \
             -o {params.output_prefix} \
             -p {threads} \

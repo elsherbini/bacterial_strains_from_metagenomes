@@ -5,3 +5,8 @@ channels:
   - defaults
 dependencies:
   - instrain=1.10
+  - dataclasses
+  - samtools
+  - pysam
+  - coverm
+
