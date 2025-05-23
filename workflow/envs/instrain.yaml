@@ -4,12 +4,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
-  - instrain>=1.5.4
-  - matplotlib>=3.5.0
-  - numpy>=1.21.0
-  - pandas>=1.3.0
-  - scikit-learn>=1.0.0
-  - biopython>=1.79
-  - h5py>=3.6.0
-  - tqdm>=4.62.0 
+  - instrain=1.10
