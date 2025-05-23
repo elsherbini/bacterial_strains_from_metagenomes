@@ -13,6 +13,11 @@ rule create_scaffold_to_bin:
     log:
         os.path.join(RESULTS_DIR, "logs", "create_scaffold_to_bin.log")
     threads: 1
+    resources:
+        cpus_per_task = 1,
+        runtime = "10m",
+        mem_mb = 2000,
+        partition = "short"
     conda:
         "../envs/instrain.yaml" # General python environment
     script:
@@ -32,6 +37,11 @@ rule run_prodigal_on_genome:
     params:
         mode = config["params"]["prodigal"]["mode"] # "single" or "meta"
     threads: 1 # Prodigal is usually single-threaded for one genome
+    resources:
+        cpus_per_task = 1,
+        runtime = "30m",
+        mem_mb = 4000,
+        partition = "short"
     conda:
         "../envs/prodigal.yaml"
     shell:
@@ -58,6 +68,11 @@ rule aggregate_prodigal_outputs:
     log:
         os.path.join(RESULTS_DIR, "logs", "aggregate_prodigal.log")
     threads: 1
+    resources:
+        cpus_per_task = 1,
+        runtime = "20m",
+        mem_mb = 4000,
+        partition = "short"
     shell:
         """
         cat {input.fnas} > {output.all_genes_fna}
@@ -73,6 +88,11 @@ rule concatenate_genomes:
     log:
         os.path.join(RESULTS_DIR, "logs", "concatenate_genomes.log")
     threads: 1
+    resources:
+        cpus_per_task = 1,
+        runtime = "20m",
+        mem_mb = 4000,
+        partition = "short"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -96,6 +116,11 @@ rule build_bowtie2_index:
         large_index_opt = "--large-index" # Default to large-index for robustness, can be configured
     threads:
         config["params"]["bowtie2_build"]["threads"]
+    resources:
+        cpus_per_task = lambda wildcards, threads: threads,
+        runtime = "2h",
+        mem_mb = 16000,
+        partition = "short"
     conda:
         "../envs/bowtie2.yaml"
     shell:

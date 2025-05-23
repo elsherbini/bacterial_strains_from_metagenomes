@@ -18,6 +18,11 @@ rule map_reads_to_db:
         # Mapping quality filter for Samtools, if needed
     threads: 
         8
+    resources:
+        cpus_per_task = 8, 
+        runtime = "4h",
+        mem_mb = 16000,
+        partition = "short"
     conda:
         "../envs/bowtie2.yaml"  # Assuming bowtie2.yaml includes samtools, otherwise use a combined env
     shell:

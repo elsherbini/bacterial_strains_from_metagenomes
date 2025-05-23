@@ -21,8 +21,10 @@ rule instrain_profile:
     threads: 
         config.get("instrain", {}).get("threads", 8)
     resources:
+        cpus_per_task = lambda wildcards, threads: threads,
+        runtime = "8h",
         mem_mb = config.get("instrain", {}).get("memory_mb", 32000),
-        time = config.get("instrain", {}).get("time_min", 240)
+        partition = "short"
     shell:
         """
         instrain profile {input.sam} {input.fasta} \
@@ -52,8 +54,10 @@ rule instrain_compare:
     threads: 
         config.get("instrain", {}).get("threads", 8)
     resources:
+        cpus_per_task = lambda wildcards, threads: threads,
+        runtime = "6h",
         mem_mb = config.get("instrain", {}).get("memory_mb", 32000),
-        time = config.get("instrain", {}).get("time_min", 240)
+        partition = "short"
     shell:
         """
         # Create a list of profile paths
