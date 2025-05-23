@@ -10,7 +10,7 @@ rule instrain_profile:
     output:
         directory("results/instrain/profiles/{sample}")
     params:
-        output_prefix = "results/instrain/profiles/{sample}/{sample}",
+        output_prefix = "results/instrain/profiles/{sample}",
         min_read_ani = config.get("instrain", {}).get("min_read_ani", 0.95),
         min_mapq = config.get("instrain", {}).get("min_mapq", 2),
         extra = config.get("instrain", {}).get("profile_extra", "--database_mode")
@@ -65,7 +65,7 @@ rule instrain_compare:
         
         # Run inStrain compare
         inStrain compare \
-            -i {params.profiles_txt} \
+            -i {input.profiles} \
             -o {params.output_prefix} \
             -p {threads} \
             --min_cov {params.min_cov} \
